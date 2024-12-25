@@ -75,7 +75,6 @@ dlg:button {
     id = "cancel",
     text = "CANCEL",
     onclick = function()
-        print(_VERSION)
         dlg:close()
     end
 }
