@@ -1,0 +1,5 @@
+# VS code
+.vscode
+
+# Mac OS bullshit
+*.DS_Store
