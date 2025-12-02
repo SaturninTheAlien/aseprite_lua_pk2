@@ -20,45 +20,71 @@ local pk2Colors = {
 }
 
 
-local dlg = Dialog {title = "PK2 colorize"}
-dlg:combobox {
-    id = "colorName",
-    label = "PK2 color",
-    option = "gray",
-    options = {
-        "gray",
-        "blue",
-        "red",
-        "green",
-        "orange",
-        "violet",
-        "turquoise"
-    }
+local colorNames = {
+    "gray",
+    "blue",
+    "red",
+    "green",
+    "orange",
+    "violet",
+    "turquoise"
 }
+
+local dlg = Dialog {title = "PK2 colorize"}
+
+
+dlg:combobox {
+    id = "oldColor",
+    label = "old color",
+    option = "gray",
+    options = colorNames
+}
+
+dlg:combobox {
+    id = "newColor",
+    label = "new color",
+    option = "gray",
+    options = colorNames
+}
+
 
 dlg:button{
     id = "ok",
     text = "OK",
     focus = true,
     onclick = function()
-        local colorIndex = pk2Colors[dlg.data.colorName]
+
         if app.image==nil then
             print("Cannot colorize, there's no image opened!")
             return
         end
 
+        local oldColorIndex = pk2Colors[dlg.data.oldColor]
+        local newColorIndex = pk2Colors[dlg.data.newColor]
+
+        print(oldColorIndex)
+        print(newColorIndex)
+
+        if oldColorIndex==newColorIndex then
+            print("It doesn't make any sense!")
+            return
+        end
 
         local selection = app.sprite.selection
         
+        
         local image = app.image:clone()
         for it in image:pixels() do
+
             if selection.isEmpty or selection:contains(it.x, it.y) then
-                local value = it()
-                if value < pk2Colors.blinking then
+
+                local value = it() -- get pixel
+                local colorType = 32 *(value // 32 )
+                if colorType == oldColorIndex then
                     local brightness = value % 32
-                    value = brightness + colorIndex  
-                    it(value)
+                    value = brightness + newColorIndex
                 end
+                it(value)
             end
         end
 
